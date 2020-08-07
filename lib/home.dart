@@ -117,6 +117,12 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(4280563301),
+        title: Text(
+          "Search",
+          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -361,15 +367,21 @@ class Search extends SearchDelegate<TaskModel> {
     return ListView.builder(
         itemCount: mylist.length,
         itemBuilder: (context, index) {
-          var item = history[index];
-
           final TaskModel listItem = mylist[index];
+          final item = history[index];
+
           return ListTile(
-            leading: FullScreenPdf(
-              pdfPath: item.path,
-            ),
-            trailing: Text(listItem.name),
-          );
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FullScreenPdf(
+                              pdfPath: item.path,
+                            )));
+              },
+              leading: Column(children: <Widget>[
+                Text(listItem.name),
+              ]));
         });
   }
 }
@@ -383,4 +395,5 @@ TodoHelper todoHelper = TodoHelper();
 List<TaskModel> tasks = [];
 
 TaskModel currentTask;
+
 List<FileSystemEntity> history = List();
