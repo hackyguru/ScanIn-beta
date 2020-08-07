@@ -116,6 +116,16 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: Search());
+            },
+          )
+        ],
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -312,6 +322,55 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+  }
+}
+
+class Search extends SearchDelegate<TaskModel> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {},
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+    return null;
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final mylist = query.isEmpty
+        ? tasks
+        : tasks.where((p) => p.name.startsWith(query)).toList();
+
+    return ListView.builder(
+        itemCount: mylist.length,
+        itemBuilder: (context, index) {
+          var item = history[index];
+
+          final TaskModel listItem = mylist[index];
+          return ListTile(
+            leading: FullScreenPdf(
+              pdfPath: item.path,
+            ),
+            trailing: Text(listItem.name),
+          );
+        });
   }
 }
 
