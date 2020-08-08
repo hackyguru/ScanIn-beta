@@ -387,17 +387,20 @@ class Search extends SearchDelegate<TaskModel> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(listItem.name),
-                  Container(
-                      width: 50,
-                      height: 50,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: PdfDocumentLoader(
-                          filePath: item.path,
-                          pageNumber: 1,
-                          backgroundFill: true,
-                        ),
-                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 200),
+                    child: Container(
+                        width: 50,
+                        height: 50,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: PdfDocumentLoader(
+                            filePath: item.path,
+                            pageNumber: 1,
+                            backgroundFill: true,
+                          ),
+                        )),
+                  ),
                 ],
               )));
         });
