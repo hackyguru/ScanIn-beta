@@ -364,13 +364,16 @@ class Search extends SearchDelegate<TaskModel> {
         ? tasks
         : tasks.where((p) => p.name.startsWith(query)).toList();
 
-    return ListView.builder(
+    return ListView.separated(
+        separatorBuilder: (context, index) => SizedBox(
+              height: 20,
+            ),
         itemCount: mylist.length,
         itemBuilder: (context, index) {
           final TaskModel listItem = mylist[index];
           final item = history[index];
 
-          return ListTile(
+          return GestureDetector(
               onTap: () {
                 Navigator.push(
                     context,
@@ -379,9 +382,24 @@ class Search extends SearchDelegate<TaskModel> {
                               pdfPath: item.path,
                             )));
               },
-              leading: Column(children: <Widget>[
-                Text(listItem.name),
-              ]));
+              child: Container(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(listItem.name),
+                  Container(
+                      width: 50,
+                      height: 50,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: PdfDocumentLoader(
+                          filePath: item.path,
+                          pageNumber: 1,
+                          backgroundFill: true,
+                        ),
+                      )),
+                ],
+              )));
         });
   }
 }
@@ -395,5 +413,4 @@ TodoHelper todoHelper = TodoHelper();
 List<TaskModel> tasks = [];
 
 TaskModel currentTask;
-
 List<FileSystemEntity> history = List();

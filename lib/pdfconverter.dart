@@ -10,13 +10,13 @@ import 'taskmodel.dart';
 import 'loading.dart';
 import 'package:flutter/services.dart';
 import 'imagefull.dart';
-void main(){
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+
+void main() {
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(new PdfConvertScreen(temp));
 }
+
 class PdfConvertScreen extends StatefulWidget {
   final File file;
 

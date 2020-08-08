@@ -1,4 +1,3 @@
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -6,15 +5,19 @@ final String tableName = "todo";
 final String Column_id = "id";
 final String Column_name = "name";
 
-
 class TaskModel {
   final String name;
   final int id;
 
-  TaskModel({this.name, this.id,});
+  TaskModel({
+    this.name,
+    this.id,
+  });
 
   Map<String, dynamic> toMap() {
-    return {Column_name: this.name, };
+    return {
+      Column_name: this.name,
+    };
   }
 }
 
@@ -40,12 +43,15 @@ class TodoHelper {
 
   Future<List<TaskModel>> getAllTask() async {
     await initDatabase();
-    final List<Map<String, dynamic>> tasks =
-        await db.query(tableName, orderBy: "$Column_id DESC");
+    final List<Map<String, dynamic>> tasks = await db.query(
+      tableName,
+    );
 
     return List.generate(tasks.length, (i) {
-      return TaskModel(name: tasks[i][Column_name], id: tasks[i][Column_id],);
+      return TaskModel(
+        name: tasks[i][Column_name],
+        id: tasks[i][Column_id],
+      );
     });
   }
-
 }
