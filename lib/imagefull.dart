@@ -7,12 +7,11 @@ import 'home.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main(){
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(new Full());
 }
 
@@ -25,8 +24,6 @@ class Full extends StatefulWidget {
 }
 
 class _FullState extends State<Full> {
- 
-
   @override
   void initState() {
     temp = widget.file;
@@ -62,15 +59,16 @@ class _FullState extends State<Full> {
               child: GestureDetector(
                   onTap: () {
                     Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (contetx) => PdfConvertScreen(temp)),(Route<dynamic> route) => false,);
+                      context,
+                      MaterialPageRoute(
+                          builder: (contetx) => PdfConvertScreen(temp)),
+                      (Route<dynamic> route) => false,
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(30)
-                    ),
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(30)),
                     width: 100,
                     height: 50,
                     child: Row(
@@ -81,7 +79,6 @@ class _FullState extends State<Full> {
                             "Next",
                             style: TextStyle(fontSize: 20),
                           ),
-                         
                         ),
                         SizedBox(
                           width: 10,
@@ -105,4 +102,5 @@ class _FullState extends State<Full> {
     });
   }
 }
- File temp;
+
+File temp;

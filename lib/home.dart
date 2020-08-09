@@ -255,83 +255,87 @@ class _HomeState extends State<Home> {
                 style: GoogleFonts.fredokaOne(
                     color: Color(4284835173), fontSize: 35),
               )),
-          Container(
-            padding: EdgeInsets.only(top: 330),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    var item = history[index];
+          if (history.length == null)
+            Container()
+          else
+            Container(
+              padding: EdgeInsets.only(top: 330),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: ListView.separated(
+                    itemBuilder: (context, index) {
+                      var item = history[index];
 
-                    return Align(
-                        alignment: Alignment.center,
-                        child: Material(
-                          elevation: 10,
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            width: 350,
-                            height: 130,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Color(4293651435),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 10),
-                                    width: 150,
-                                    height: 100,
-                                    child: PdfDocumentLoader(
-                                      filePath: item.path,
-                                      pageNumber: 1,
-                                      backgroundFill: true,
+                      return Align(
+                          alignment: Alignment.center,
+                          child: Material(
+                            elevation: 10,
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              width: 350,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Color(4293651435),
+                              ),
+                              child: Row(
+                                children: <Widget>[
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                      padding: EdgeInsets.only(left: 10),
+                                      width: 150,
+                                      height: 100,
+                                      child: PdfDocumentLoader(
+                                        filePath: item.path,
+                                        pageNumber: 1,
+                                        backgroundFill: true,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Column(children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.only(left: 50, top: 30),
-                                    child: Text("${tasks[index].name}"),
-                                    alignment: Alignment.center,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FullScreenPdf(
-                                                    pdfPath: item.path,
-                                                  )));
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(left: 60),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text('View PDF'),
-                                          Icon(Icons.arrow_forward)
-                                        ],
-                                      ),
+                                  Column(children: <Widget>[
+                                    Container(
+                                      padding:
+                                          EdgeInsets.only(left: 50, top: 30),
+                                      child: Text("${tasks[index].name}"),
                                       alignment: Alignment.center,
                                     ),
-                                  )
-                                ])
-                              ],
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FullScreenPdf(
+                                                      pdfPath: item.path,
+                                                    )));
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.only(left: 60),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text('View PDF'),
+                                            Icon(Icons.arrow_forward)
+                                          ],
+                                        ),
+                                        alignment: Alignment.center,
+                                      ),
+                                    )
+                                  ])
+                                ],
+                              ),
                             ),
-                          ),
-                        ));
-                  },
-                  itemCount: history.length,
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 20,
-                  ),
-                )),
-          ),
+                          ));
+                    },
+                    itemCount: history.length,
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: 20,
+                    ),
+                  )),
+            )
         ],
       ),
     );
@@ -423,4 +427,4 @@ TodoHelper todoHelper = TodoHelper();
 List<TaskModel> tasks = [];
 
 TaskModel currentTask;
-List<FileSystemEntity> history = List();
+List<FileSystemEntity> history = new List<FileSystemEntity>();

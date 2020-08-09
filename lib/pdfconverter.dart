@@ -12,6 +12,8 @@ import 'package:flutter/services.dart';
 import 'imagefull.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(new PdfConvertScreen(temp));
