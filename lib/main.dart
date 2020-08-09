@@ -2,13 +2,13 @@ import 'package:example/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main(){
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
-  ]);
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(new Screen());
 }
+
 class Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _ScrState extends State<Scr> {
           ),
         ),
         Expanded(
-            child: Align( 
+            child: Align(
           alignment: FractionalOffset.bottomCenter,
           child: RichText(
               text: TextSpan(

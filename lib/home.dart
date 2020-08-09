@@ -1,4 +1,5 @@
 import 'package:example/main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'taskmodel.dart';
 import 'dart:io';
@@ -87,17 +88,25 @@ class _HomeState extends State<Home> {
   }
 
   void requestScanHistory() async {
-    final tempDir = await getApplicationSupportDirectory();
-    var dir = Directory(tempDir.path + "/smartscan");
-    print(tempDir.path);
-    print(dir.path);
-
-    setState(() {
-      history = dir.listSync(recursive: false);
-    });
-
-    print(history.length);
-    print(tasks.length);
+    try {
+      final tempDir = await getApplicationSupportDirectory();
+      var path = tempDir.path + "/smartscan";
+      var dir = Directory(path);
+      bool exists = await Directory(path).exists();
+      if (exists) {
+        print(tempDir.path);
+        print(dir.path);
+        setState(() {
+          history = dir.listSync(recursive: false);
+        });
+        print(history.length);
+        print(tasks.length);
+      } else {
+        new Directory(path).create().then((Directory directory) {
+          print(directory.path);
+        });
+      }
+    } catch (e) {}
   }
 
   @override
@@ -107,9 +116,7 @@ class _HomeState extends State<Home> {
     } catch (e) {
       print((e));
     }
-
     super.initState();
-
     future();
   }
 
