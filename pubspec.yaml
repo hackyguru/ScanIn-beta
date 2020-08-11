@@ -42,11 +42,9 @@ dependencies:
   edge_detection: ^1.0.5
   pdf_render:
   share_extend:
-  permission_handler: ^3.2.2
-  focused_menu: ^1.0.1
+  permission_handler:
   directory_picker:
-  flutter_full_pdf_viewer: ^1.0.6
-
+  focused_menu:
 
     
 dev_dependencies:

@@ -10,6 +10,8 @@ void main() {
 }
 
 class Screen extends StatelessWidget {
+    static String route = 'SplashScreen';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

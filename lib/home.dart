@@ -1,17 +1,14 @@
-import 'package:example/main.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'taskmodel.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf_render/pdf_render_widgets.dart';
 import 'imagefull.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/services.dart';
-import 'viewer.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'view_doc.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +19,8 @@ void main() {
 }
 
 class DocIt extends StatelessWidget {
+  static String route = "HomeScreen";
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(home: Home());
@@ -34,111 +33,77 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  File image;
+  List<Map<String, dynamic>> imageDirectories = [];
+  var imageDirPaths = [];
+  var imageDirModDate = [];
+  var imageCount = 0;
 
-  future() async {
-    List<TaskModel> list = await todoHelper.getAllTask();
-    setState(() {
-      tasks = list;
-    });
-  }
-
-  Future getImagefromgallery() async {
-    try {
-      image = await ImagePicker.pickImage(source: ImageSource.gallery);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Full(
-                    file: image,
-                  )));
-    } catch (e) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => DocIt()),
-          (Route<dynamic> route) => false);
-    }
-  }
-
-  Future getImagefromcamera() async {
-    // Platform messages may fail, so we use a try/catch PlatformException.
-
-    try {
-      image = File(await EdgeDetection.detectEdge);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Full(
-                    file: image,
-                  )));
-
-      if (!mounted) return;
-    } catch (e) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => DocIt()),
-        (Route<dynamic> route) => false,
-      );
-      print("error");
-      Text(
-        "you have not given permision",
-        style: TextStyle(fontSize: 30),
-      );
-    }
-  }
-
-  void requestScanHistory() async {
-    try {
-      final tempDir = await getApplicationSupportDirectory();
-      var path = tempDir.path + "/smartscan";
-      var dir = Directory(path);
-      bool exists = await Directory(path).exists();
-      if (exists) {
-        print(tempDir.path);
-        print(dir.path);
-        setState(() {
-          history = dir.listSync(recursive: false);
+  Future getDirectoryNames() async {
+    Directory appDir = await getExternalStorageDirectory();
+    Directory appDirPath = Directory("${appDir.path}");
+    appDirPath
+        .list(recursive: false, followLinks: false)
+        .listen((FileSystemEntity entity) {
+      String path = entity.path;
+      if (!imageDirPaths.contains(path) &&
+          path !=
+              '/storage/emulated/0/Android/data/com.example.openscan/files/Pictures') {
+        imageDirPaths.add(path);
+        Directory(path)
+            .list(recursive: false, followLinks: false)
+            .listen((FileSystemEntity entity) {
+          imageCount++;
         });
-        print(history.length);
-        print(tasks.length);
-      } else {
-        new Directory(path).create().then((Directory directory) {
-          print(directory.path);
+        FileStat fileStat = FileStat.statSync(path);
+        imageDirectories.add({
+          'path': path,
+          'modified': fileStat.modified,
+          'size': fileStat.size,
+          'count': imageCount
         });
       }
-    } catch (e) {}
+      imageDirectories.sort((a, b) => a['modified'].compareTo(b['modified']));
+      imageDirectories = imageDirectories.reversed.toList();
+    });
+    return imageDirectories;
+  }
+
+  void askPermission() async {
+    await _requestPermission();
   }
 
   @override
   void initState() {
-    try {
-      requestScanHistory();
-    } catch (e) {
-      print((e));
-    }
     super.initState();
-    future();
+    getData();
+    askPermission();
+    _onRefresh();
+  }
+
+  Future _onRefresh() async {
+    imageDirectories = await getDirectoryNames();
+    setState(() {});
+  }
+
+  Future<bool> _requestPermission() async {
+    final PermissionHandler _permissionHandler = PermissionHandler();
+    var result =
+        await _permissionHandler.requestPermissions([PermissionGroup.storage]);
+    if (result[PermissionGroup.storage] == PermissionStatus.granted) {
+      return true;
+    }
+    return false;
+  }
+
+  void getData() {
+    _onRefresh();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    String folderName;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(4280563301),
-        title: Text(
-          "Search",
-          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: Search());
-            },
-          )
-        ],
-      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -184,19 +149,9 @@ class _HomeState extends State<Home> {
             child: Row(
               children: <Widget>[
                 GestureDetector(
-                  onTap: () async {
-                    await getImagefromgallery();
-                    image != null
-                        ? Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Full(
-                                      file: image,
-                                    )),
-                            (Route<dynamic> route) => false,
-                          )
-                        : Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => DocIt()));
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Full()));
                   },
                   child: Material(
                     elevation: 10,
@@ -219,19 +174,9 @@ class _HomeState extends State<Home> {
                   width: 25,
                 ),
                 GestureDetector(
-                    onTap: () async {
-                      await getImagefromcamera();
-                      image != null
-                          ? Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Full(
-                                        file: image,
-                                      )),
-                              (Route<dynamic> route) => false,
-                            )
-                          : Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => DocIt()));
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Full()));
                     },
                     child: Material(
                       elevation: 10,
@@ -255,176 +200,112 @@ class _HomeState extends State<Home> {
                 style: GoogleFonts.fredokaOne(
                     color: Color(4284835173), fontSize: 35),
               )),
-          if (history.length == null)
-            Container()
-          else
-            Container(
+          Container(
               padding: EdgeInsets.only(top: 330),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: ListView.separated(
-                    itemBuilder: (context, index) {
-                      var item = history[index];
-
-                      return Align(
-                          alignment: Alignment.center,
-                          child: Material(
-                            elevation: 10,
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              width: 350,
-                              height: 130,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Color(4293651435),
+              child: FutureBuilder(
+                  future: getDirectoryNames(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return Theme(
+                      data: Theme.of(context)
+                          .copyWith(accentColor: Color(0xFF333333)),
+                      child: ListView.builder(
+                        itemCount: imageDirectories.length,
+                        itemBuilder: (context, index) {
+                          folderName = imageDirectories[index]['path']
+                              .substring(
+                                  imageDirectories[index]['path']
+                                          .lastIndexOf('/') +
+                                      1,
+                                  imageDirectories[index]['path'].length - 1);
+                          return FocusedMenuHolder(
+                            onPressed: null,
+                            menuWidth: size.width * 0.44,
+                            child: ListTile(
+                              // TODO : Add sample image
+                              leading: Icon(
+                                Icons.landscape,
+                                size: 30,
                               ),
-                              child: Row(
-                                children: <Widget>[
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      padding: EdgeInsets.only(left: 10),
-                                      width: 150,
-                                      height: 100,
-                                      child: PdfDocumentLoader(
-                                        filePath: item.path,
-                                        pageNumber: 1,
-                                        backgroundFill: true,
-                                      ),
+                              title: Text(
+                                folderName,
+                                style: TextStyle(fontSize: 14),
+                                overflow: TextOverflow.visible,
+                              ),
+                              subtitle: Text(
+                                'Last Modified: ${imageDirectories[index]['modified'].day}-${imageDirectories[index]['modified'].month}-${imageDirectories[index]['modified'].year}',
+                                style: TextStyle(fontSize: 11),
+                              ),
+                              trailing: Icon(
+                                Icons.arrow_right,
+                                size: 30,
+                                color: Color(0xFF333333),
+                              ),
+                              onTap: () async {
+                                getDirectoryNames();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewDocument(
+                                      dirPath: imageDirectories[index]['path'],
                                     ),
                                   ),
-                                  Column(children: <Widget>[
-                                    Container(
-                                      padding:
-                                          EdgeInsets.only(left: 50, top: 30),
-                                      child: Text("${tasks[index].name}"),
-                                      alignment: Alignment.center,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    FullScreenPdf(
-                                                      pdfPath: item.path,
-                                                    )));
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.only(left: 60),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text('View PDF'),
-                                            Icon(Icons.arrow_forward)
-                                          ],
-                                        ),
-                                        alignment: Alignment.center,
-                                      ),
-                                    )
-                                  ])
-                                ],
-                              ),
+                                ).whenComplete(() => () {
+                                      print('Completed');
+                                    });
+                              },
                             ),
-                          ));
-                    },
-                    itemCount: history.length,
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: 20,
-                    ),
-                  )),
-            )
+                            menuItems: [
+                              FocusedMenuItem(
+                                title: Text('Delete'),
+                                trailingIcon: Icon(Icons.delete),
+                                backgroundColor: Colors.redAccent,
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                        ),
+                                        title: Text('Delete'),
+                                        content: Text(
+                                            'Do you really want to delete file?'),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: Text('Cancel'),
+                                          ),
+                                          FlatButton(
+                                            onPressed: () {
+                                              Directory(imageDirectories[index]
+                                                      ['path'])
+                                                  .deleteSync(recursive: true);
+                                              Navigator.pop(context);
+                                              getData();
+                                            },
+                                            child: Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                  color: Colors.redAccent),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    );
+                  }))
         ],
       ),
     );
   }
 }
-
-class Search extends SearchDelegate<TaskModel> {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {},
-      )
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    return null;
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final mylist = query.isEmpty
-        ? tasks
-        : tasks.where((p) => p.name.startsWith(query)).toList();
-
-    return ListView.separated(
-        separatorBuilder: (context, index) => SizedBox(
-              height: 20,
-            ),
-        itemCount: mylist.length,
-        itemBuilder: (context, index) {
-          final TaskModel listItem = mylist[index];
-          final item = history[index];
-
-          return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FullScreenPdf(
-                              pdfPath: item.path,
-                            )));
-              },
-              child: Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Text(listItem.name),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 200),
-                    child: Container(
-                        width: 50,
-                        height: 50,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: PdfDocumentLoader(
-                            filePath: item.path,
-                            pageNumber: 1,
-                            backgroundFill: true,
-                          ),
-                        )),
-                  ),
-                ],
-              )));
-        });
-  }
-}
-
-var now = new DateTime.now();
-var formatter = new DateFormat.yMMMd();
-String name = formatter.format(now);
-
-TodoHelper todoHelper = TodoHelper();
-
-List<TaskModel> tasks = [];
-
-TaskModel currentTask;
-List<FileSystemEntity> history = new List<FileSystemEntity>();
