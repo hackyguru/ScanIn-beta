@@ -284,7 +284,7 @@ class _ViewDocumentState extends State<ViewDocument> {
                       title: Text('Share as PDF'),
                       content: TextField(
                         onChanged: (value) {
-                          fileName = '$value OpenScan';
+                          fileName = '$value ScanIn';
                         },
                         controller: TextEditingController(
                             text: fileName.substring(8, fileName.length)),
@@ -292,7 +292,7 @@ class _ViewDocumentState extends State<ViewDocument> {
                         textCapitalization: TextCapitalization.words,
                         decoration: InputDecoration(
                           prefixStyle: TextStyle(color: Colors.white),
-                          suffixText: ' OpenScan.pdf',
+                          suffixText: ' ScanIn.pdf',
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: secondaryColor)),
                         ),

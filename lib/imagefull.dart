@@ -43,7 +43,7 @@ class _FullState extends State<Full> {
 
   Future<void> createDirectoryName() async {
     Directory appDir = await getExternalStorageDirectory();
-    docPath = "${appDir.path}/OpenScan ${DateTime.now()}";
+    docPath = "${appDir.path}/ScanIn ${DateTime.now()}";
   }
 
   Future createImage() async {
