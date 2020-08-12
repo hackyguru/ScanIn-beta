@@ -10,6 +10,9 @@ import 'cropper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'imagecard.dart';
 
+String fileName;
+List<Map<String, dynamic>> imageFilesWithDate = [];
+
 class ViewDocument extends StatefulWidget {
   static String route = "ViewDocument";
 
@@ -24,14 +27,11 @@ class ViewDocument extends StatefulWidget {
 class _ViewDocumentState extends State<ViewDocument> {
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  List<Map<String, dynamic>> imageFilesWithDate = [];
   List<String> imageFilesPath = [];
 
   FileOperations fileOperations;
 
   String dirName;
-
-  String fileName;
 
   bool _statusSuccess;
 
@@ -99,11 +99,11 @@ class _ViewDocumentState extends State<ViewDocument> {
         backgroundColor: primaryColor,
         key: scaffoldKey,
         appBar: AppBar(
-          elevation: 0,
+          elevation: 10,
           centerTitle: true,
           backgroundColor: primaryColor,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context, true);
               //TODO : Reload home
@@ -111,12 +111,13 @@ class _ViewDocumentState extends State<ViewDocument> {
           ),
           title: RichText(
             text: TextSpan(
-              text: 'View ',
+              text: 'Your ',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               children: [
                 TextSpan(
                   text: 'Document',
-                  style: TextStyle(color: secondaryColor),
+                  style: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -206,7 +207,10 @@ class _ViewDocumentState extends State<ViewDocument> {
             padding: EdgeInsets.fromLTRB(15, 20, 15, 15),
             child: Text(
               folderName,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: Colors.blue),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -217,8 +221,11 @@ class _ViewDocumentState extends State<ViewDocument> {
             color: Colors.white,
           ),
           ListTile(
-            leading: Icon(Icons.add_a_photo),
-            title: Text('Add Image'),
+            leading: Icon(Icons.add_a_photo, color: Colors.orange),
+            title: Text(
+              'Add Image',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () async {
               Navigator.pop(context);
               var image = await createImage();
@@ -232,44 +239,14 @@ class _ViewDocumentState extends State<ViewDocument> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.phone_android),
-            title: Text('Save to device'),
-            onTap: () async {
-              String savedDirectory;
-              Navigator.pop(context);
-              savedDirectory = await fileOperations.saveToDevice(
-                context: context,
-                fileName: fileName,
-                images: imageFilesWithDate,
-              );
-              String displayText;
-              (savedDirectory != null)
-                  ? displayText = "Saved at $savedDirectory"
-                  : displayText = "Failed to generate pdf. Try Again.";
-              scaffoldKey.currentState.showSnackBar(
-                SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  backgroundColor: primaryColor,
-                  duration: Duration(seconds: 1),
-                  content: Container(
-                    decoration: BoxDecoration(),
-                    alignment: Alignment.center,
-                    height: 20,
-                    width: size.width * 0.3,
-                    child: Text(
-                      displayText,
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.picture_as_pdf),
-            title: Text('Share as PDF'),
+            leading: Icon(
+              Icons.picture_as_pdf,
+              color: Colors.orange,
+            ),
+            title: Text(
+              'Save To Device',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () async {
               Navigator.pop(context);
               showDialog(
@@ -284,7 +261,7 @@ class _ViewDocumentState extends State<ViewDocument> {
                       title: Text('Share as PDF'),
                       content: TextField(
                         onChanged: (value) {
-                          fileName = '$value ScanIn';
+                          fileName = '$value OpenScan';
                         },
                         controller: TextEditingController(
                             text: fileName.substring(8, fileName.length)),
@@ -292,7 +269,85 @@ class _ViewDocumentState extends State<ViewDocument> {
                         textCapitalization: TextCapitalization.words,
                         decoration: InputDecoration(
                           prefixStyle: TextStyle(color: Colors.white),
-                          suffixText: ' ScanIn.pdf',
+                          suffixText: ' OpenScan.pdf',
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: secondaryColor)),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                        FlatButton(
+                          onPressed: () async {
+                            String savedDirectory;
+                            Navigator.pop(context);
+                            savedDirectory = await fileOperations.saveToDevice(
+                              context: context,
+                              fileName: fileName,
+                              images: imageFilesWithDate,
+                            );
+                            String displayText;
+                            (savedDirectory != null)
+                                ? displayText = "Saved at $savedDirectory"
+                                : displayText =
+                                    "Failed to generate pdf. Try Again.";
+                            scaffoldKey.currentState.showSnackBar(
+                              SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                backgroundColor: primaryColor,
+                                duration: Duration(seconds: 1),
+                                content: Container(
+                                  decoration: BoxDecoration(),
+                                  alignment: Alignment.center,
+                                  height: 20,
+                                  width: size.width * 0.3,
+                                  child: Text(
+                                    displayText,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text("Save"),
+                        ),
+                      ],
+                    );
+                  });
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.picture_as_pdf, color: Colors.orange),
+            title: Text('Share as PDF', style: TextStyle(color: Colors.white)),
+            onTap: () async {
+              Navigator.pop(context);
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      title: Text('Share as PDF'),
+                      content: TextField(
+                        onChanged: (value) {
+                          fileName = '$value OpenScan';
+                        },
+                        controller: TextEditingController(
+                            text: fileName.substring(8, fileName.length)),
+                        cursorColor: secondaryColor,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                          prefixStyle: TextStyle(color: Colors.white),
+                          suffixText: ' OpenScan.pdf',
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: secondaryColor)),
                         ),
@@ -327,55 +382,17 @@ class _ViewDocumentState extends State<ViewDocument> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.image),
-            title: Text('Share as image'),
+            leading: Icon(
+              Icons.image,
+              color: Colors.orange,
+            ),
+            title: Text(
+              'Share as image',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () {
               ShareExtend.shareMultiple(imageFilesPath, 'file');
               Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.delete,
-              color: Colors.redAccent,
-            ),
-            title: Text(
-              'Delete All',
-              style: TextStyle(color: Colors.redAccent),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                    title: Text('Delete'),
-                    content: Text('Do you really want to delete file?'),
-                    actions: <Widget>[
-                      FlatButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('Cancel'),
-                      ),
-                      FlatButton(
-                        onPressed: () {
-                          Directory(dirName).deleteSync(recursive: true);
-                          Navigator.popUntil(
-                              context, ModalRoute.withName(DocIt.route));
-                        },
-                        child: Text(
-                          'Delete',
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
             },
           ),
         ],

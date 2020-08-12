@@ -1,16 +1,15 @@
 import 'dart:io';
 
 import 'package:directory_picker/directory_picker.dart';
-
+import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:edge_detection/edge_detection.dart';
 
 class FileOperations {
-  String appName = 'ScanIn';
+  String appName = 'OpenScan';
   static bool pdfStatus;
 
   Future<String> getAppPath() async {
@@ -59,18 +58,8 @@ class FileOperations {
   // ADD IMAGES
   Future<File> openCamera() async {
     File image;
-    var picture = File(await EdgeDetection.detectEdge);
-    if (picture != null) {
-      final requiredPicture = File(picture.path);
-      image = requiredPicture;
-    }
-    return image;
-  }
-
-  Future<File> opengall() async {
-    File image;
     final _picker = ImagePicker();
-    var picture = await _picker.getImage(source: ImageSource.gallery);
+    var picture = await _picker.getImage(source: ImageSource.camera);
     if (picture != null) {
       final requiredPicture = File(picture.path);
       image = requiredPicture;
@@ -155,6 +144,17 @@ class FileOperations {
     return pdfStatus;
   }
 
+  Future<File> opengall() async {
+    File image;
+    final _picker = ImagePicker();
+    var picture = await _picker.getImage(source: ImageSource.gallery);
+    if (picture != null) {
+      final requiredPicture = File(picture.path);
+      image = requiredPicture;
+    }
+    return image;
+  }
+
   Future<void> deleteTemporaryFiles() async {
     // Delete the temporary files created by the image_picker package
     Directory appDocDir = await getExternalStorageDirectory();
@@ -165,4 +165,14 @@ class FileOperations {
     }
     new Directory(appDocPath).create();
   }
+}
+
+Future<File> openCamera() async {
+  File image;
+  var picture = File(await EdgeDetection.detectEdge);
+  if (picture != null) {
+    final requiredPicture = File(picture.path);
+    image = requiredPicture;
+  }
+  return image;
 }

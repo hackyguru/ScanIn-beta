@@ -14,6 +14,31 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'cropper.dart';
 
+Future createImage() async {
+  File image = await fileOperations.openCamera();
+  if (image != null) {
+    Cropper cropper = Cropper();
+    var imageFile = await cropper.cropImage(image);
+    if (imageFile != null) imageFiles.add(imageFile);
+  }
+  image = imageFile;
+}
+
+Future createImagefromgal() async {
+  File image = await fileOperations.opengall();
+  if (image != null) {
+    Cropper cropper = Cropper();
+    var imageFile = await cropper.cropImage(image);
+    if (imageFile != null) imageFiles.add(imageFile);
+  }
+  image = imageFile;
+}
+
+List<File> imageFiles = [];
+File imageFile;
+
+FileOperations fileOperations = FileOperations();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -29,8 +54,6 @@ class Full extends StatefulWidget {
 
 class _FullState extends State<Full> {
   FileOperations fileOperations = FileOperations();
-  File imageFile;
-  List<File> imageFiles = [];
   String appPath;
   String docPath;
 
@@ -38,22 +61,11 @@ class _FullState extends State<Full> {
   void initState() {
     super.initState();
     createDirectoryName();
-    createImage();
   }
 
   Future<void> createDirectoryName() async {
     Directory appDir = await getExternalStorageDirectory();
     docPath = "${appDir.path}/ScanIn ${DateTime.now()}";
-  }
-
-  Future createImage() async {
-    File image = await fileOperations.openCamera();
-    if (image != null) {
-      Cropper cropper = Cropper();
-      var imageFile = await cropper.cropImage(image);
-      if (imageFile != null) imageFiles.add(imageFile);
-    }
-    setState(() {});
   }
 
   Future<bool> _onBackPressed() async {

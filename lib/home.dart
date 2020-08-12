@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:intl/intl.dart';
+import 'constranits.dart';
 import 'package:path_provider/path_provider.dart';
 import 'imagefull.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -75,14 +75,18 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getData();
     askPermission();
     _onRefresh();
+    getData();
   }
 
   Future _onRefresh() async {
     imageDirectories = await getDirectoryNames();
     setState(() {});
+  }
+
+  void getData() {
+    _onRefresh();
   }
 
   Future<bool> _requestPermission() async {
@@ -95,17 +99,13 @@ class _HomeState extends State<Home> {
     return false;
   }
 
-  void getData() {
-    _onRefresh();
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     String folderName;
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
+        backgroundColor: primaryColor,
+        body: Stack(children: <Widget>[
           Container(
             height: 250,
             decoration: BoxDecoration(
@@ -149,7 +149,8 @@ class _HomeState extends State<Home> {
             child: Row(
               children: <Widget>[
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    await createImagefromgal();
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Full()));
                   },
@@ -174,7 +175,8 @@ class _HomeState extends State<Home> {
                   width: 25,
                 ),
                 GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      await createImage();
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Full()));
                     },
@@ -200,112 +202,86 @@ class _HomeState extends State<Home> {
                 style: GoogleFonts.fredokaOne(
                     color: Color(4284835173), fontSize: 35),
               )),
-          Container(
-              padding: EdgeInsets.only(top: 330),
-              child: FutureBuilder(
-                  future: getDirectoryNames(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    return Theme(
-                      data: Theme.of(context)
-                          .copyWith(accentColor: Color(0xFF333333)),
-                      child: ListView.builder(
-                        itemCount: imageDirectories.length,
-                        itemBuilder: (context, index) {
-                          folderName = imageDirectories[index]['path']
-                              .substring(
-                                  imageDirectories[index]['path']
-                                          .lastIndexOf('/') +
-                                      1,
-                                  imageDirectories[index]['path'].length - 1);
-                          return FocusedMenuHolder(
-                            onPressed: null,
-                            menuWidth: size.width * 0.44,
-                            child: ListTile(
-                              // TODO : Add sample image
-                              leading: Icon(
-                                Icons.landscape,
-                                size: 30,
-                              ),
-                              title: Text(
-                                folderName,
-                                style: TextStyle(fontSize: 14),
-                                overflow: TextOverflow.visible,
-                              ),
-                              subtitle: Text(
-                                'Last Modified: ${imageDirectories[index]['modified'].day}-${imageDirectories[index]['modified'].month}-${imageDirectories[index]['modified'].year}',
-                                style: TextStyle(fontSize: 11),
-                              ),
-                              trailing: Icon(
-                                Icons.arrow_right,
-                                size: 30,
-                                color: Color(0xFF333333),
-                              ),
-                              onTap: () async {
-                                getDirectoryNames();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ViewDocument(
-                                      dirPath: imageDirectories[index]['path'],
-                                    ),
+          ClipRect(
+            child: Container(
+              height: 800,
+              padding: EdgeInsets.only(top: 320),
+              child: RefreshIndicator(
+                backgroundColor: primaryColor,
+                color: secondaryColor,
+                onRefresh: _onRefresh,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                    ),
+                    Expanded(
+                      child: FutureBuilder(
+                        future: getDirectoryNames(),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          return Theme(
+                            data: Theme.of(context)
+                                .copyWith(accentColor: primaryColor),
+                            child: ListView.builder(
+                              itemCount: imageDirectories.length,
+                              itemBuilder: (context, index) {
+                                folderName = imageDirectories[index]['path']
+                                    .substring(
+                                        imageDirectories[index]['path']
+                                                .lastIndexOf('/') +
+                                            1,
+                                        imageDirectories[index]['path'].length -
+                                            1);
+                                return ListTile(
+                                  // TODO : Add sample image
+                                  leading: Icon(
+                                    Icons.landscape,
+                                    color: Colors.orange,
+                                    size: 30,
                                   ),
-                                ).whenComplete(() => () {
-                                      print('Completed');
-                                    });
+                                  title: Text(
+                                    folderName,
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.white),
+                                    overflow: TextOverflow.visible,
+                                  ),
+                                  subtitle: Text(
+                                    'Last Modified: ${imageDirectories[index]['modified'].day}-${imageDirectories[index]['modified'].month}-${imageDirectories[index]['modified'].year}',
+                                    style: TextStyle(
+                                        fontSize: 11, color: Colors.white),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.arrow_right,
+                                    size: 30,
+                                    color: secondaryColor,
+                                  ),
+                                  onTap: () async {
+                                    getDirectoryNames();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ViewDocument(
+                                          dirPath: imageDirectories[index]
+                                              ['path'],
+                                        ),
+                                      ),
+                                    ).whenComplete(() => () {
+                                          print('Completed');
+                                        });
+                                  },
+                                );
                               },
                             ),
-                            menuItems: [
-                              FocusedMenuItem(
-                                title: Text('Delete'),
-                                trailingIcon: Icon(Icons.delete),
-                                backgroundColor: Colors.redAccent,
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                        ),
-                                        title: Text('Delete'),
-                                        content: Text(
-                                            'Do you really want to delete file?'),
-                                        actions: <Widget>[
-                                          FlatButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: Text('Cancel'),
-                                          ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              Directory(imageDirectories[index]
-                                                      ['path'])
-                                                  .deleteSync(recursive: true);
-                                              Navigator.pop(context);
-                                              getData();
-                                            },
-                                            child: Text(
-                                              'Delete',
-                                              style: TextStyle(
-                                                  color: Colors.redAccent),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
                           );
                         },
                       ),
-                    );
-                  }))
-        ],
-      ),
-    );
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ]));
   }
 }
