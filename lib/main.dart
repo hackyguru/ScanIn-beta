@@ -1,71 +1,47 @@
-import 'package:example/home.dart';
+import 'package:example/screens/home_screen.dart';
+import 'package:example/screens/splash_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:example/Utilities/constants.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(new Screen());
+import 'package:example/screens/scan_document.dart';
+import 'package:example/screens/view_document.dart';
+
+import 'screens/pdf_screen.dart';
+
+void main() async {
+  runApp(OpenScan());
 }
 
-class Screen extends StatelessWidget {
-    static String route = 'SplashScreen';
+class OpenScan extends StatefulWidget {
+  @override
+  _OpenScanState createState() => _OpenScanState();
+}
 
+class _OpenScanState extends State<OpenScan> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: primaryColor,
+      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarColor: primaryColor,
+      statusBarBrightness: Brightness.light,
+    ));
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+
     return MaterialApp(
-      home: Scr(),
-    );
-  }
-}
-
-class Scr extends StatefulWidget {
-  @override
-  _ScrState createState() => _ScrState();
-}
-
-class _ScrState extends State<Scr> {
-  @override
-  void initState() {
-    super.initState();
-    new Future.delayed(
-        const Duration(seconds: 5),
-        () => Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => DocIt()),
-              (Route<dynamic> route) => false,
-            ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(000000),
-      body: Column(children: <Widget>[
-        Center(
-          child: Padding(
-            padding: EdgeInsets.only(top: 200),
-            child: Image.asset(
-              "assets/best.gif",
-              width: 200,
-            ),
-          ),
-        ),
-        Expanded(
-            child: Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: RichText(
-              text: TextSpan(
-            children: [
-              TextSpan(text: "A Product of ", style: TextStyle(fontSize: 17)),
-              TextSpan(
-                  text: "Cybrin",
-                  style: TextStyle(color: Colors.green[200], fontSize: 17))
-            ],
-          )),
-        ))
-      ]),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark(),
+      initialRoute: Screen.route,
+      routes: {
+        Screen.route: (context) => Screen(),
+        DocIt.route: (context) => DocIt(),
+        ViewDocument.route: (context) => ViewDocument(),
+        PDFScreen.route: (context) => PDFScreen(),
+        ScanDocument.route: (context) => ScanDocument(),
+      },
     );
   }
 }

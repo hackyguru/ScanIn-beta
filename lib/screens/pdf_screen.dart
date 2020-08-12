@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
-import 'constranits.dart';
+import 'package:example/Utilities/constants.dart';
 
 class PDFScreen extends StatefulWidget {
   static String route = 'PDFScreen';

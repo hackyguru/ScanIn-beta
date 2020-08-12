@@ -1,14 +1,11 @@
+import 'package:example/screens/scan_document.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'constranits.dart';
 import 'package:path_provider/path_provider.dart';
-import 'imagefull.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
-import 'package:focused_menu/focused_menu.dart';
-import 'package:focused_menu/modals.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'view_doc.dart';
+import 'view_document.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +34,9 @@ class _HomeState extends State<Home> {
   var imageDirPaths = [];
   var imageDirModDate = [];
   var imageCount = 0;
+
+  Color primaryColor = Color(0xFF333333);
+  Color secondaryColor = Color(0xFFf37121);
 
   Future getDirectoryNames() async {
     Directory appDir = await getExternalStorageDirectory();
@@ -150,9 +150,10 @@ class _HomeState extends State<Home> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () async {
-                    await createImagefromgal();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Full()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ScanDocument()));
                   },
                   child: Material(
                     elevation: 10,
@@ -176,9 +177,10 @@ class _HomeState extends State<Home> {
                 ),
                 GestureDetector(
                     onTap: () async {
-                      await createImage();
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Full()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ScanDocument()));
                     },
                     child: Material(
                       elevation: 10,

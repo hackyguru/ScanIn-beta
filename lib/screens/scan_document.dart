@@ -1,59 +1,30 @@
-import 'package:example/home.dart';
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:ui';
-import 'package:flutter/services.dart';
+import 'dart:core';
 import 'dart:io';
-import 'constranits.dart';
-import 'view_doc.dart';
-import 'file_operations.dart';
-import 'package:path_provider/path_provider.dart';
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
-import 'dart:core';
-import 'package:flutter/cupertino.dart';
-import 'cropper.dart';
+import 'package:example/Utilities/constants.dart';
+import 'package:example/Utilities/cropper.dart';
+import 'package:example/Utilities/file_operations.dart';
+import 'package:example/screens/home_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
-Future createImage() async {
-  File image = await fileOperations.openCamera();
-  if (image != null) {
-    Cropper cropper = Cropper();
-    var imageFile = await cropper.cropImage(image);
-    if (imageFile != null) imageFiles.add(imageFile);
-  }
-  image = imageFile;
-}
+import 'view_document.dart';
 
-Future createImagefromgal() async {
-  File image = await fileOperations.opengall();
-  if (image != null) {
-    Cropper cropper = Cropper();
-    var imageFile = await cropper.cropImage(image);
-    if (imageFile != null) imageFiles.add(imageFile);
-  }
-  image = imageFile;
-}
+class ScanDocument extends StatefulWidget {
+  static String route = "ScanDocument";
 
-List<File> imageFiles = [];
-File imageFile;
-
-FileOperations fileOperations = FileOperations();
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(new Full());
-}
-
-class Full extends StatefulWidget {
   @override
-  _FullState createState() => _FullState();
+  _ScanDocumentState createState() => _ScanDocumentState();
 }
 
-class _FullState extends State<Full> {
+class _ScanDocumentState extends State<ScanDocument> {
   FileOperations fileOperations = FileOperations();
+  File imageFile;
+  List<File> imageFiles = [];
   String appPath;
   String docPath;
 
@@ -61,11 +32,34 @@ class _FullState extends State<Full> {
   void initState() {
     super.initState();
     createDirectoryName();
+    createImage();
+  }
+
+  ///image=imagefile;
+  Future createImage() async {
+    File image = await fileOperations.openCamera();
+    if (image != null) {
+      Cropper cropper = Cropper();
+      var imageFile = await cropper.cropImage(image);
+      if (imageFile != null) imageFiles.add(imageFile);
+    }
+    setState(() {});
+  }
+
+  void _reCropImage(index) async {
+    Cropper cropper = Cropper();
+    var image = await cropper.cropImage(imageFiles[index]);
+    if (image != null) {
+      imageFiles.removeAt(index);
+      setState(() {
+        imageFiles.insert(index, image);
+      });
+    }
   }
 
   Future<void> createDirectoryName() async {
     Directory appDir = await getExternalStorageDirectory();
-    docPath = "${appDir.path}/ScanIn ${DateTime.now()}";
+    docPath = "${appDir.path}/OpenScan ${DateTime.now()}";
   }
 
   Future<bool> _onBackPressed() async {
@@ -140,7 +134,7 @@ class _FullState extends State<Full> {
                 children: [
                   TextSpan(
                     text: 'Document',
-                    style: TextStyle(color: secondaryColor),
+                    style: TextStyle(color: Colors.blue),
                   ),
                 ],
               ),
@@ -178,6 +172,20 @@ class _FullState extends State<Full> {
                                 });
                           },
                           menuItems: [
+                            FocusedMenuItem(
+                              title: Text(
+                                'Crop',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              trailingIcon: Icon(
+                                Icons.crop,
+                                color: Colors.black,
+                              ),
+                              onPressed: () async {
+                                int tempIndex = index * 2;
+                                _reCropImage(tempIndex);
+                              },
+                            ),
                             FocusedMenuItem(
                               title: Text('Delete'),
                               trailingIcon: Icon(Icons.delete),
@@ -250,6 +258,17 @@ class _FullState extends State<Full> {
                               );
                             },
                             menuItems: [
+                              FocusedMenuItem(
+                                title: Text(
+                                  'Crop',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                trailingIcon: Icon(Icons.crop),
+                                onPressed: () async {
+                                  int tempIndex = index * 2 + 1;
+                                  _reCropImage(tempIndex);
+                                },
+                              ),
                               FocusedMenuItem(
                                 title: Text('Remove'),
                                 trailingIcon: Icon(Icons.delete),
