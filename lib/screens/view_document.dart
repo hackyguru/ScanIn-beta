@@ -106,7 +106,6 @@ class _ViewDocumentState extends State<ViewDocument> {
             icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
               Navigator.pop(context, true);
-              //TODO : Reload home
             },
           ),
           title: RichText(
@@ -236,38 +235,82 @@ class _ViewDocumentState extends State<ViewDocument> {
           ),
           ListTile(
             leading: Icon(Icons.phone_android, color: Colors.orange),
-            title: Text('Save to device'),
+            title: Text('Save PDF To Device',
+                style: TextStyle(color: Colors.white)),
             onTap: () async {
-              String savedDirectory;
               Navigator.pop(context);
-              savedDirectory = await fileOperations.saveToDevice(
-                context: context,
-                fileName: fileName,
-                images: imageFilesWithDate,
-              );
-              String displayText;
-              (savedDirectory != null)
-                  ? displayText = "Saved at $savedDirectory"
-                  : displayText = "Failed to generate pdf. Try Again.";
-              scaffoldKey.currentState.showSnackBar(
-                SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  backgroundColor: primaryColor,
-                  duration: Duration(seconds: 1),
-                  content: Container(
-                    decoration: BoxDecoration(),
-                    alignment: Alignment.center,
-                    height: 20,
-                    width: size.width * 0.3,
-                    child: Text(
-                      displayText,
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    ),
-                  ),
-                ),
-              );
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      title: Text('Save To Device'),
+                      content: TextField(
+                        onChanged: (value) {
+                          fileName = '$value ScanIn';
+                        },
+                        controller: TextEditingController(
+                            text: fileName.substring(8, fileName.length)),
+                        cursorColor: secondaryColor,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: InputDecoration(
+                          prefixStyle: TextStyle(color: Colors.white),
+                          suffixText: ' ScanIn.pdf',
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: secondaryColor)),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel'),
+                        ),
+                        FlatButton(
+                          onPressed: () async {
+                            String savedDirectory;
+                            savedDirectory = await fileOperations.saveToDevice(
+                              context: context,
+                              fileName: fileName,
+                              images: imageFilesWithDate,
+                            );
+                            String displayText;
+                            (savedDirectory != null)
+                                ? displayText = "Saved at $savedDirectory"
+                                : displayText =
+                                    "Failed To Save PDF. Try Again.";
+
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                backgroundColor: primaryColor,
+                                duration: Duration(seconds: 1),
+                                content: Container(
+                                  decoration: BoxDecoration(),
+                                  alignment: Alignment.center,
+                                  height: 20,
+                                  width: size.width * 0.3,
+                                  child: Text(
+                                    displayText,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                )));
+
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Save',
+                          ),
+                        ),
+                      ],
+                    );
+                  });
             },
           ),
           ListTile(
@@ -287,7 +330,7 @@ class _ViewDocumentState extends State<ViewDocument> {
                       title: Text('Share as PDF'),
                       content: TextField(
                         onChanged: (value) {
-                          fileName = '$value OpenScan';
+                          fileName = '$value ScanIn';
                         },
                         controller: TextEditingController(
                             text: fileName.substring(8, fileName.length)),
@@ -295,7 +338,7 @@ class _ViewDocumentState extends State<ViewDocument> {
                         textCapitalization: TextCapitalization.words,
                         decoration: InputDecoration(
                           prefixStyle: TextStyle(color: Colors.white),
-                          suffixText: ' OpenScan.pdf',
+                          suffixText: ' ScanIn.pdf',
                           focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: secondaryColor)),
                         ),

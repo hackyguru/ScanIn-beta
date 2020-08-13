@@ -99,7 +99,7 @@ class FileOperations {
   Future<String> saveToDevice(
       {BuildContext context, String fileName, dynamic images}) async {
     Directory selectedDirectory;
-    Directory openscanDir = Directory("/storage/emulated/0/OpenScan/PDF");
+    Directory openscanDir = Directory("/storage/emulated/0/ScanIn/PDF");
     try {
       if (!openscanDir.existsSync()) {
         openscanDir.createSync();

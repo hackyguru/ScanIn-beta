@@ -59,7 +59,7 @@ class _ScanDocumentState extends State<ScanDocument> {
 
   Future<void> createDirectoryName() async {
     Directory appDir = await getExternalStorageDirectory();
-    docPath = "${appDir.path}/OpenScan ${DateTime.now()}";
+    docPath = "${appDir.path}/ScanIn ${DateTime.now()}";
   }
 
   Future<bool> _onBackPressed() async {
@@ -88,8 +88,12 @@ class _ScanDocumentState extends State<ScanDocument> {
                   ),
                 ),
                 FlatButton(
-                  onPressed: () => Navigator.popUntil(
-                      context, ModalRoute.withName(DocIt.route)),
+                  onPressed: () => {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => DocIt()),
+                        (route) => false)
+                  },
                   child: Text(
                     'Discard',
                     style: TextStyle(color: Colors.redAccent),

@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
       String path = entity.path;
       if (!imageDirPaths.contains(path) &&
           path !=
-              '/storage/emulated/0/Android/data/com.example.openscan/files/Pictures') {
+              '/storage/emulated/0/Android/data/com.example.scainin/files/Pictures') {
         imageDirPaths.add(path);
         Directory(path)
             .list(recursive: false, followLinks: false)
@@ -101,7 +101,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     String folderName;
     return Scaffold(
         backgroundColor: primaryColor,
@@ -204,10 +203,9 @@ class _HomeState extends State<Home> {
                 style: GoogleFonts.fredokaOne(
                     color: Color(4284835173), fontSize: 35),
               )),
-          ClipRect(
-            child: Container(
-              height: 800,
-              padding: EdgeInsets.only(top: 320),
+          Padding(
+            padding: EdgeInsets.only(top: 320),
+            child: ClipRect(
               child: RefreshIndicator(
                 backgroundColor: primaryColor,
                 color: secondaryColor,
@@ -236,7 +234,6 @@ class _HomeState extends State<Home> {
                                         imageDirectories[index]['path'].length -
                                             1);
                                 return ListTile(
-                                  // TODO : Add sample image
                                   leading: Icon(
                                     Icons.landscape,
                                     color: Colors.orange,
