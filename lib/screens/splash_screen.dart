@@ -61,7 +61,10 @@ class _ScrState extends State<Scr> {
               TextSpan(text: "A Product of ", style: TextStyle(fontSize: 17)),
               TextSpan(
                   text: "Cybrin",
-                  style: TextStyle(color: Colors.green[200], fontSize: 17))
+                  style: TextStyle(
+                      color: Colors.green[200],
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold))
             ],
           )),
         ))

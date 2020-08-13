@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:directory_picker/directory_picker.dart';
+import 'package:edge_detection/edge_detection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -58,8 +59,8 @@ class FileOperations {
   // ADD IMAGES
   Future<File> openCamera() async {
     File image;
-    final _picker = ImagePicker();
-    var picture = await _picker.getImage(source: ImageSource.gallery);
+
+    var picture = File(await EdgeDetection.detectEdge);
     if (picture != null) {
       final requiredPicture = File(picture.path);
       image = requiredPicture;
@@ -81,7 +82,8 @@ class FileOperations {
       BuildContext context, selectedDirectory) async {
     Directory directory = selectedDirectory;
     if (Platform.isAndroid) {
-      directory = Directory("/storage/emulated/0/");
+      directory = Directory("/storage/emulated/0/ScanIn");
+      directory.createSync();
     } else {
       directory = await getExternalStorageDirectory();
     }
