@@ -103,7 +103,7 @@ class _ViewDocumentState extends State<ViewDocument> {
           centerTitle: true,
           backgroundColor: primaryColor,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context, true);
             },
@@ -205,7 +205,10 @@ class _ViewDocumentState extends State<ViewDocument> {
             padding: EdgeInsets.fromLTRB(15, 20, 15, 15),
             child: Text(
               folderName,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: Colors.blue),
               overflow: TextOverflow.ellipsis,
             ),
           ),

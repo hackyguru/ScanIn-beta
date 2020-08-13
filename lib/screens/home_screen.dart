@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'view_document.dart';
+import 'scandoc_fromgal.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -149,14 +150,8 @@ class _HomeState extends State<Home> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () async {
-                    await createImagefromgal();
-                    // setState(() {
-
-                    // });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ScanDocument()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SelectGal()));
                   },
                   child: Material(
                     elevation: 10,
@@ -180,8 +175,6 @@ class _HomeState extends State<Home> {
                 ),
                 GestureDetector(
                     onTap: () async {
-                      await createImage();
-                      setState(() {});
                       Navigator.push(
                           context,
                           MaterialPageRoute(

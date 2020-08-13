@@ -11,22 +11,22 @@ import 'package:example/Utilities/cropper.dart';
 import 'package:example/Utilities/file_operations.dart';
 import 'package:example/screens/home_screen.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'scan_document.dart';
 import 'view_document.dart';
 
-class ScanDocument extends StatefulWidget {
-  static String route = "ScanDocument";
+class SelectGal extends StatefulWidget {
+  static String route = "SelectGal";
 
   @override
-  _ScanDocumentState createState() => _ScanDocumentState();
+  _SelectGalState createState() => _SelectGalState();
 }
 
-class _ScanDocumentState extends State<ScanDocument> {
+class _SelectGalState extends State<SelectGal> {
   @override
   void initState() {
     super.initState();
     createDirectoryName();
-    createImage();
+    createImagefromgall();
   }
 
   FileOperations fileOperations = FileOperations();
@@ -36,8 +36,8 @@ class _ScanDocumentState extends State<ScanDocument> {
   String docPath;
 
   ///image=imagefile;
-  Future createImage() async {
-    File image = await fileOperations.openCamera();
+  Future createImagefromgall() async {
+    File image = await fileOperations.openCamerafromgall();
     if (image != null) {
       Cropper cropper = Cropper();
       var imageFile = await cropper.cropImage(image);
@@ -165,7 +165,6 @@ class _ScanDocumentState extends State<ScanDocument> {
                                 context: context,
                                 builder: (context) {
                                   return Dialog(
-                                    elevation: 20,
                                     backgroundColor: primaryColor,
                                     child: Container(
                                       width: size.width * 0.95,
@@ -232,23 +231,23 @@ class _ScanDocumentState extends State<ScanDocument> {
                           ],
                           child: Container(
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
-                                )),
+                                border:
+                                    Border.all(width: 2, color: Colors.black),
+                                borderRadius: BorderRadius.circular(20)),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.file(imageFiles[index * 2],
-                                    fit: BoxFit.fill)),
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.file(
+                                imageFiles[index * 2],
+                                fit: BoxFit.fill,
+                              ),
+                            ),
                             height: size.height * 0.25,
-                            width: size.width * 0.4,
+                            width: size.width * 0.35,
                           ),
                         ),
                       ),
                       if (index * 2 + 1 < imageFiles.length)
                         RaisedButton(
-                          elevation: 20,
                           color: primaryColor,
                           onPressed: () {},
                           child: FocusedMenuHolder(
@@ -258,14 +257,23 @@ class _ScanDocumentState extends State<ScanDocument> {
                                 context: context,
                                 builder: (context) {
                                   return Dialog(
-                                    elevation: 20,
-                                    backgroundColor: primaryColor,
-                                    child: Container(
-                                      width: size.width * 0.95,
-                                      child:
-                                          Image.file(imageFiles[index * 2 + 1]),
-                                    ),
-                                  );
+                                      elevation: 20,
+                                      backgroundColor: primaryColor,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1, color: Colors.black),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: Image.file(
+                                            imageFiles[index * 2 + 1],
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ));
                                 },
                               );
                             },
@@ -324,21 +332,21 @@ class _ScanDocumentState extends State<ScanDocument> {
                             ],
                             child: Container(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                      width: 2, color: Colors.black)),
+                                  border:
+                                      Border.all(width: 2, color: Colors.black),
+                                  borderRadius: BorderRadius.circular(20)),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
                                 child: Image.file(
                                   imageFiles[index * 2 + 1],
                                   fit: BoxFit.fill,
-                                  height: size.height * 0.25,
-                                  width: size.width * 0.4,
                                 ),
                               ),
+                              height: size.height * 0.25,
+                              width: size.width * 0.35,
                             ),
                           ),
-                        )
+                        ),
                     ],
                   ),
                 );
@@ -383,7 +391,7 @@ class _ScanDocumentState extends State<ScanDocument> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: secondaryColor,
             onPressed: () async {
-              await createImage();
+              await createImagefromgall();
             },
             child: Icon(Icons.add),
           ),
