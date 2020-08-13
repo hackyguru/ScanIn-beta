@@ -103,13 +103,14 @@ class ImageCard extends StatelessWidget {
           ],
           child: Container(
             decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black),
-                borderRadius: BorderRadius.circular(10)),
+                border: Border.all(width: 2, color: Colors.black),
+                borderRadius: BorderRadius.circular(20)),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
               child: Image.file(
                 imageFile,
                 scale: 1.7,
+                fit: BoxFit.fill,
               ),
             ),
             height: size.height * 0.27,
