@@ -68,6 +68,17 @@ class FileOperations {
     return image;
   }
 
+  Future<File> openCamerafromgall() async {
+    File image;
+    final _picker = ImagePicker();
+    var picture = await _picker.getImage(source: ImageSource.gallery);
+    if (picture != null) {
+      final requiredPicture = File(picture.path);
+      image = requiredPicture;
+    }
+    return image;
+  }
+
   Future<void> saveImage({File image, int i, dirName}) async {
     if (await Directory(dirName).exists() != true) {
       new Directory(dirName).create();

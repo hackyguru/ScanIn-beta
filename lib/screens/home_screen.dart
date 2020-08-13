@@ -149,6 +149,10 @@ class _HomeState extends State<Home> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () async {
+                    await createImagefromgal();
+                    // setState(() {
+
+                    // });
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -176,6 +180,8 @@ class _HomeState extends State<Home> {
                 ),
                 GestureDetector(
                     onTap: () async {
+                      await createImage();
+                      setState(() {});
                       Navigator.push(
                           context,
                           MaterialPageRoute(

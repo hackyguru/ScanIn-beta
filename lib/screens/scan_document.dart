@@ -14,6 +14,30 @@ import 'package:path_provider/path_provider.dart';
 
 import 'view_document.dart';
 
+Future createImagefromgal() async {
+  File image = await fileOperations.openCamerafromgall();
+  if (image != null) {
+    Cropper cropper = Cropper();
+    var imageFile = await cropper.cropImage(image);
+    if (imageFile != null) imageFiles.add(imageFile);
+  }
+  image = imageFile;
+}
+
+Future createImage() async {
+  File image = await fileOperations.openCamera();
+  if (image != null) {
+    Cropper cropper = Cropper();
+    var imageFile = await cropper.cropImage(image);
+    if (imageFile != null) imageFiles.add(imageFile);
+  }
+  image = imageFile;
+}
+
+FileOperations fileOperations = FileOperations();
+File imageFile;
+List<File> imageFiles = [];
+
 class ScanDocument extends StatefulWidget {
   static String route = "ScanDocument";
 
@@ -22,9 +46,6 @@ class ScanDocument extends StatefulWidget {
 }
 
 class _ScanDocumentState extends State<ScanDocument> {
-  FileOperations fileOperations = FileOperations();
-  File imageFile;
-  List<File> imageFiles = [];
   String appPath;
   String docPath;
 
@@ -32,19 +53,9 @@ class _ScanDocumentState extends State<ScanDocument> {
   void initState() {
     super.initState();
     createDirectoryName();
-    createImage();
   }
 
   ///image=imagefile;
-  Future createImage() async {
-    File image = await fileOperations.openCamera();
-    if (image != null) {
-      Cropper cropper = Cropper();
-      var imageFile = await cropper.cropImage(image);
-      if (imageFile != null) imageFiles.add(imageFile);
-    }
-    setState(() {});
-  }
 
   void _reCropImage(index) async {
     Cropper cropper = Cropper();
