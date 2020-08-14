@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'view_document.dart';
 import 'scandoc_fromgal.dart';
+import 'package:example/about.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,10 @@ class DocIt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Home());
+    return MaterialApp(
+      home: Home(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
 
@@ -102,22 +106,115 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     String folderName;
     return Scaffold(
+        drawer: Container(
+          decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(20),
+                  topRight: Radius.circular(20))),
+          width: size.width * 0.6,
+          child: Column(
+            children: <Widget>[
+              Spacer(),
+              Image.asset(
+                'assets/logo.jpeg',
+                width: 200,
+                height: 100,
+              ),
+              Spacer(),
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.home,
+                      color: Colors.orange,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Home',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () => Navigator.pop(context),
+              ),
+              Divider(
+                thickness: 0.2,
+                indent: 30,
+                endIndent: 30,
+                color: Colors.white,
+              ),
+              ListTile(
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.person_outline,
+                      color: Colors.orange,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'About Us',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => About()));
+                },
+              ),
+              Divider(
+                thickness: 0.2,
+                indent: 30,
+                endIndent: 30,
+                color: Colors.white,
+              ),
+              Spacer(
+                flex: 10,
+              ),
+              IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () => Navigator.pop(context),
+                color: secondaryColor,
+              ),
+              Spacer(),
+            ],
+          ),
+        ),
         backgroundColor: primaryColor,
         body: Stack(children: <Widget>[
           Container(
             height: 250,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30)),
-              color: Color(4280563301),
-            ),
+                borderRadius:
+                    BorderRadius.only(bottomLeft: Radius.circular(30)),
+                gradient: LinearGradient(
+                    colors: [Color(4294214946), Color(4292963586)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomCenter)),
             child: Row(children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Column(children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top: 30, right: 60),
+                    padding: const EdgeInsets.only(top: 50, right: 60),
                     child: Text("Hello ",
                         style: GoogleFonts.lobster(
                           fontSize: 60,
@@ -126,7 +223,7 @@ class _HomeState extends State<Home> {
                         )),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 40),
+                    padding: const EdgeInsets.only(right: 60),
                     child: Text("There !",
                         style: GoogleFonts.lobster(
                             fontSize: 60,
@@ -136,13 +233,6 @@ class _HomeState extends State<Home> {
                 ]),
               ),
             ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30, left: 240),
-            child: Image.asset(
-              "assets/scan.png",
-              width: 350,
-            ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 180, top: 220),
@@ -165,7 +255,7 @@ class _HomeState extends State<Home> {
                       ),
                       child: Icon(
                         Icons.photo_library,
-                        color: Colors.green,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -189,7 +279,10 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white),
-                        child: Icon(Icons.camera),
+                        child: Icon(
+                          Icons.camera,
+                          color: Colors.black,
+                        ),
                       ),
                     ))
               ],
@@ -203,7 +296,7 @@ class _HomeState extends State<Home> {
                     color: Color(4284835173), fontSize: 35),
               )),
           Padding(
-            padding: EdgeInsets.only(top: 320),
+            padding: EdgeInsets.only(top: 330),
             child: ClipRect(
               child: RefreshIndicator(
                 backgroundColor: primaryColor,

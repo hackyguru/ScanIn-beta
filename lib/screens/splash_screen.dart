@@ -47,7 +47,7 @@ class _ScrState extends State<Scr> {
           child: Padding(
             padding: EdgeInsets.only(top: 200),
             child: Image.asset(
-              "assets/best.gif",
+              "assets/that.gif",
               width: 200,
             ),
           ),
