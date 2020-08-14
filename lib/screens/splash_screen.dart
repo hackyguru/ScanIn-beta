@@ -30,7 +30,7 @@ class _ScrState extends State<Scr> {
   void initState() {
     super.initState();
     new Future.delayed(
-        const Duration(seconds: 5),
+        const Duration(seconds: 6),
         () => Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => DocIt()),
@@ -47,7 +47,7 @@ class _ScrState extends State<Scr> {
           child: Padding(
             padding: EdgeInsets.only(top: 200),
             child: Image.asset(
-              "assets/that.gif",
+              "assets/best.gif",
               width: 200,
             ),
           ),

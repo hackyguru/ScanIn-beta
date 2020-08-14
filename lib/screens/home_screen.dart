@@ -120,10 +120,14 @@ class _HomeState extends State<Home> {
           child: Column(
             children: <Widget>[
               Spacer(),
-              Image.asset(
-                'assets/logo.jpeg',
-                width: 200,
-                height: 100,
+              Container(
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                child: Image.asset(
+                  'assets/logo.jpeg',
+                  width: 200,
+                  height: 100,
+                ),
               ),
               Spacer(),
               ListTile(
