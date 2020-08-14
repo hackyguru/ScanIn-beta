@@ -29,15 +29,6 @@ class _AboutScreenState extends State<AboutScreen> {
     }
   }
 
-  launchWebsite() async {
-    const url = 'https://github.com/dhanush17-tech/ScanIn';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   launchjoin() async {
     const url = 'https://www.cybrin.com/join.html';
     if (await canLaunch(url)) {
@@ -199,38 +190,6 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
               SizedBox(
                 height: 20,
-              ),
-              Center(
-                child: GestureDetector(
-                  onTap: () async => await launchWebsite(),
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 2, 7, 2),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 5.0),
-                            child: Image.asset(
-                              'assets/github.png',
-                              scale: 3.5,
-                            ),
-                          ),
-                          Text(
-                            "OPEN SOURCED ON\n GITHUB",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
               ),
             ],
           ),
