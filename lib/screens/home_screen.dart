@@ -2,7 +2,6 @@ import 'package:example/screens/scan_document.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'view_document.dart';
@@ -127,7 +126,8 @@ class _HomeState extends State<Home> {
                   Padding(
                     padding: const EdgeInsets.only(top: 50, right: 60),
                     child: Text("Scan ",
-                        style: GoogleFonts.fredokaOne(
+                        style: TextStyle(
+                          fontFamily: 'FredokaOne',
                           fontSize: 60,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -136,7 +136,8 @@ class _HomeState extends State<Home> {
                   Padding(
                     padding: const EdgeInsets.only(right: 130),
                     child: Text("In !",
-                        style: GoogleFonts.fredokaOne(
+                        style: TextStyle(
+                            fontFamily: 'FredokaOne',
                             fontSize: 60,
                             fontWeight: FontWeight.bold,
                             color: Colors.white)),
@@ -203,8 +204,10 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.only(top: 290, left: 15),
               child: Text(
                 "Your Files",
-                style: GoogleFonts.fredokaOne(
-                    color: Color(4284835173), fontSize: 35),
+                style: TextStyle(
+                    fontFamily: 'FredokaOne',
+                    color: Color(4284835173),
+                    fontSize: 35),
               )),
           Padding(
             padding: EdgeInsets.only(top: 330),
