@@ -41,32 +41,16 @@ class _ScrState extends State<Scr> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(000000),
+      backgroundColor: Color(4281545523),
       body: Column(children: <Widget>[
-        Center(
-          child: Padding(
-            padding: EdgeInsets.only(top: 200),
-            child: Image.asset(
-              "assets/best.gif",
-              width: 200,
-            ),
-          ),
-        ),
         Expanded(
-            child: Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: RichText(
-              text: TextSpan(
-            children: [
-              TextSpan(text: "A Product of ", style: TextStyle(fontSize: 17)),
-              TextSpan(
-                  text: "Cybrin",
-                  style: TextStyle(
-                      color: Colors.green[200],
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold))
-            ],
-          )),
+            child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Image.asset(
+            "assets/logog.jpeg",
+            height: 650,
+            width: 700,
+          ),
         ))
       ]),
     );

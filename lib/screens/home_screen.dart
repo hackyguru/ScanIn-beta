@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'view_document.dart';
 import 'scandoc_fromgal.dart';
-import 'package:example/about.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +51,7 @@ class _HomeState extends State<Home> {
       String path = entity.path;
       if (!imageDirPaths.contains(path) &&
           path !=
-              '/storage/emulated/0/Android/data/com.example.scainin/files/Pictures') {
+              '/storage/emulated/0/Android/data/com.cybrin.scanin/files/Pictures') {
         imageDirPaths.add(path);
         Directory(path)
             .list(recursive: false, followLinks: false)
@@ -110,98 +109,6 @@ class _HomeState extends State<Home> {
 
     String folderName;
     return Scaffold(
-        drawer: Container(
-          decoration: BoxDecoration(
-              color: primaryColor,
-              borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(20),
-                  topRight: Radius.circular(20))),
-          width: size.width * 0.6,
-          child: Column(
-            children: <Widget>[
-              Spacer(),
-              Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                child: Image.asset(
-                  'assets/logo.jpeg',
-                  width: 200,
-                  height: 100,
-                ),
-              ),
-              Spacer(),
-              ListTile(
-                title: Row(
-                  children: [
-                    Icon(
-                      Icons.home,
-                      color: Colors.orange,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Home',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () => Navigator.pop(context),
-              ),
-              Divider(
-                thickness: 0.2,
-                indent: 30,
-                endIndent: 30,
-                color: Colors.white,
-              ),
-              ListTile(
-                title: Row(
-                  children: [
-                    Icon(
-                      Icons.person_outline,
-                      color: Colors.orange,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'About Us',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => About()));
-                },
-              ),
-              Divider(
-                thickness: 0.2,
-                indent: 30,
-                endIndent: 30,
-                color: Colors.white,
-              ),
-              Spacer(
-                flex: 10,
-              ),
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.pop(context),
-                color: secondaryColor,
-              ),
-              Spacer(),
-            ],
-          ),
-        ),
         backgroundColor: primaryColor,
         body: Stack(children: <Widget>[
           Container(
@@ -219,17 +126,17 @@ class _HomeState extends State<Home> {
                 child: Column(children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(top: 50, right: 60),
-                    child: Text("Hello ",
-                        style: GoogleFonts.lobster(
+                    child: Text("Scan ",
+                        style: GoogleFonts.fredokaOne(
                           fontSize: 60,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         )),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 60),
-                    child: Text("There !",
-                        style: GoogleFonts.lobster(
+                    padding: const EdgeInsets.only(right: 130),
+                    child: Text("In !",
+                        style: GoogleFonts.fredokaOne(
                             fontSize: 60,
                             fontWeight: FontWeight.bold,
                             color: Colors.white)),

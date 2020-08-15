@@ -419,8 +419,10 @@ class _ViewDocumentState extends State<ViewDocument> {
                       FlatButton(
                         onPressed: () {
                           Directory(dirName).deleteSync(recursive: true);
-                          Navigator.popUntil(
-                              context, ModalRoute.withName(DocIt.route));
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => DocIt()),
+                              (route) => false);
                         },
                         child: Text(
                           'Delete',
